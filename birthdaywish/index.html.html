@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surprise Birthday! 🎉</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600;700&family=Great+Vibes&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(-45deg, #667eea, #764ba2);
+            background-size: 400% 400%;
+            animation: gradientShift 12s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+            z-index: 10;
+        }
+
+        .page.active { opacity: 1; transform: translateY(0); z-index: 20; }
+        .page.exit { opacity: 0; transform: translateY(-50px); }
+
+        .title {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(3rem, 12vw, 8rem);
+            color: white;
+            text-shadow: 3px 3px 10px rgba(0,0,0,0.5);
+            margin-bottom: 30px;
+            animation: bounceIn 1.5s ease;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .subtitle {
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            color: rgba(255,255,255,0.95);
+            font-weight: 300;
+            line-height: 1.4;
+            max-width: 700px;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .highlight {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            font-size: 1.2em;
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #ff6b6b, #feca57) !important;
+            color: white !important;
+            border: none !important;
+            padding: 20px 60px !important;
+            font-size: 1.4rem !important;
+            font-weight: 600 !important;
+            border-radius: 50px !important;
+            cursor: pointer !important;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3) !important;
+            transition: all 0.3s ease !important;
+            text-transform: uppercase !important;
+            letter-spacing: 2px !important;
+            position: relative !important;
+            z-index: 100 !important;
+            pointer-events: all !important;
+            animation: pulse 2s infinite !important;
+            font-family: 'Poppins', sans-serif !important;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
+            50% { box-shadow: 0 20px 45px rgba(0,0,0,0.4); }
+            100% { box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
+        }
+
+        .cta-button:hover {
+            transform: translateY(-8px) !important;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4) !important;
+        }
+
+        .emoji-cluster {
+            font-size: 6rem;
+            margin: 30px 0;
+            animation: wiggle 2s infinite;
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            75% { transform: rotate(-5deg); }
+        }
+
+        .particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255,255,255,0.8);
+            border-radius: 50%;
+            animation: float 8s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        .progress-dots {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        .dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .dot.active {
+            background: #fff;
+            transform: scale(1.4);
+            box-shadow: 0 0 15px rgba(255,255,255,0.8);
+        }
+
+        /* ✨ PREMIUM WATERMARK - RIGHT SIDE ✨ */
+        .watermark {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 8px 20px 8px 8px;
+            border-radius: 50px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            animation: floatWatermark 3s ease-in-out infinite;
+        }
+
+        @keyframes floatWatermark {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .watermark:hover {
+            background: rgba(0, 0, 0, 0.65);
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 15px 45px rgba(255, 107, 107, 0.5);
+            border-color: rgba(254, 202, 87, 0.6);
+        }
+
+        .photo-wrapper {
+            position: relative;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            padding: 3px;
+            background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            background-size: 300% 300%;
+            animation: gradientBorder 4s ease infinite;
+            box-shadow: 0 4px 20px rgba(255, 107, 107, 0.6);
+            flex-shrink: 0;
+        }
+
+        .photo-wrapper img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: center 25%;
+            border: 2px solid #000;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        @keyframes gradientBorder {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .watermark:hover .photo-wrapper {
+            box-shadow: 0 6px 30px rgba(254, 202, 87, 0.9);
+        }
+
+        .watermark:hover .photo-wrapper img {
+            transform: scale(1.15);
+        }
+
+        .watermark-text-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            line-height: 1.2;
+        }
+
+        .watermark-prefix {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 400;
+        }
+
+        .watermark-text {
+            font-family: 'Great Vibes', cursive;
+            font-size: 1.7rem;
+            background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientText 4s ease infinite;
+            font-weight: 700;
+            letter-spacing: 1px;
+            line-height: 1;
+        }
+
+        @keyframes gradientText {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .verified-badge {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(45deg, #00b4db, #0083b0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            border: 2px solid #000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            animation: badgePulse 2s infinite;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        @media (max-width: 768px) {
+            .watermark {
+                bottom: 15px;
+                right: 15px;
+                padding: 6px 16px 6px 6px;
+                gap: 10px;
+            }
+            .photo-wrapper { width: 45px; height: 45px; }
+            .watermark-text { font-size: 1.4rem; }
+            .watermark-prefix { font-size: 0.6rem; letter-spacing: 1px; }
+            .verified-badge { width: 16px; height: 16px; font-size: 9px; }
+            .progress-dots { bottom: 20px; left: 20px; transform: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Page 1: Teaser -->
+    <div class="page active" data-page="1">
+        <div class="particles" id="particles1"></div>
+        <h1 class="title">Hey There! 👋</h1>
+        <div class="emoji-cluster">🎁✨🎉</div>
+        <p class="subtitle">
+            I've got a <span class="highlight">SURPRISE</span> for you! 
+            <br>Ready to unwrap it? 😊
+        </p>
+        <button class="cta-button" onclick="nextPage(2)">Let's Go! 🚀</button>
+    </div>
+
+    <!-- Page 2: Special Day -->
+    <div class="page" data-page="2">
+        <div class="particles" id="particles2"></div>
+        <h1 class="title">🌟 Special Day! 🌟</h1>
+        <div class="emoji-cluster">🎂💖🎈</div>
+        <p class="subtitle">
+            The world got <span class="highlight">LUCKY</span> the day you were born! 
+            <br>You make every moment brighter! ✨
+        </p>
+        <button class="cta-button" onclick="nextPage(3)">Keep Going ➡️</button>
+    </div>
+
+    <!-- Page 3: Birthday Wish -->
+    <div class="page" data-page="3">
+        <div class="particles" id="particles3"></div>
+        <h1 class="title">Happy Birthday! 🎉</h1>
+        <div class="emoji-cluster">🎂🥳🎊</div>
+        <p class="subtitle">
+            Wishing you a year filled with <span class="highlight">laughter, love & success</span>! 
+            <br>May all your dreams sparkle like these stars! ⭐
+            <br><br>
+            <span style="font-size: 1.8rem; font-weight: 700;">To [Your Special Name] 💝</span>
+        </p>
+        <button class="cta-button" onclick="restart()">Celebrate Again! 🔄</button>
+    </div>
+
+    <!-- Progress Dots -->
+    <div class="progress-dots">
+        <div class="dot active" data-page="1" onclick="goToPage(1)"></div>
+        <div class="dot" data-page="2" onclick="goToPage(2)"></div>
+        <div class="dot" data-page="3" onclick="goToPage(3)"></div>
+    </div>
+
+    <!-- ✨ WATERMARK WITH PHOTO - RIGHT SIDE ✨ -->
+    <div class="watermark">
+        <div class="photo-wrapper">
+            <!-- 🔴 PASTE YOUR DIRECT IMAGE LINK BELOW (replace the src URL) -->
+            <img id="priyanshuPhoto" 
+                 src="https://ibb.co/m59YdDBN.jpg" 
+                 alt="Priyanshu" 
+                 onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><defs><linearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22><stop offset=%220%22 stop-color=%22%23ff6b6b%22/><stop offset=%220.5%22 stop-color=%22%23feca57%22/><stop offset=%221%22 stop-color=%22%2348dbfb%22/></linearGradient></defs><rect width=%22100%22 height=%22100%22 fill=%22url(%23g)%22/><text x=%2250%22 y=%2268%22 font-size=%2255%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Arial%22 font-weight=%22bold%22>P</text></svg>';">
+            <div class="verified-badge">✓</div>
+        </div>
+        <div class="watermark-text-container">
+            <span class="watermark-prefix">Created by</span>
+            <span class="watermark-text">Priyanshu</span>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const totalPages = 3;
+
+        function nextPage(pageNum) {
+            const current = document.querySelector(`[data-page="${currentPage}"]`);
+            const next = document.querySelector(`[data-page="${pageNum}"]`);
+            const currentDot = document.querySelector(`.dot[data-page="${currentPage}"]`);
+            const nextDot = document.querySelector(`.dot[data-page="${pageNum}"]`);
+
+            current.classList.remove('active');
+            current.classList.add('exit');
+            
+            setTimeout(() => {
+                current.classList.remove('exit');
+                next.classList.add('active');
+                currentDot.classList.remove('active');
+                nextDot.classList.add('active');
+                currentPage = pageNum;
+            }, 400);
+        }
+
+        function goToPage(pageNum) {
+            if (pageNum !== currentPage) nextPage(pageNum);
+        }
+
+        function restart() { nextPage(1); }
+
+        function createParticles(containerId) {
+            const container = document.getElementById(containerId);
+            for (let i = 0; i < 40; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                particle.style.width = particle.style.height = (Math.random() * 5 + 2) + 'px';
+                container.appendChild(particle);
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                if (currentPage < totalPages) nextPage(currentPage + 1);
+                else restart();
+            }
+        });
+
+        let startX = 0;
+        document.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; });
+        document.addEventListener('touchend', (e) => {
+            if (!startX) return;
+            const diff = startX - e.changedTouches[0].clientX;
+            if (diff > 50 && currentPage < totalPages) nextPage(currentPage + 1);
+            else if (diff < -50) restart();
+            startX = 0;
+        });
+
+        window.addEventListener('load', () => {
+            createParticles('particles1');
+            createParticles('particles2');
+            createParticles('particles3');
+        });
+    </script>
+</body>
+</html>
